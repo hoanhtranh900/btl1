@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.nio.file.*;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
@@ -93,5 +94,26 @@ public class FileService {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public List<FileAttachDocument> getAllByObjectId(Long id) {
+        return attachDocumentRepository.findByObjectId(id);
+    }
+
+    public void delete(Long id) throws IOException {
+        //delete file by file-path
+        FileAttachDocument fileAttachDocument = attachDocumentRepository.findById(id).get();
+//        File file = new File(fileAttachDocument.getFilePath());
+//        try (InputStream inputStream = new FileInputStream
+//                (fileAttachDocument.getFilePath())) {
+//            Files.deleteIfExists(file.toPath());
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+
+        //close
+//        Files.deleteIfExists(Paths.get(fileAttachDocument.getFilePath()));
+
+        attachDocumentRepository.delete(id);
     }
 }

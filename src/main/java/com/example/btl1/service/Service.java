@@ -6,6 +6,8 @@ import com.example.btl1.repository.BookRepository;
 import com.example.btl1.utils.H;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.*;
+
+import java.io.IOException;
 import java.util.List;
 
 @org.springframework.stereotype.Service
@@ -18,6 +20,7 @@ public class Service {
     private FileService fileService;
 
     public void save(Book book) {
+
         bookRepository.save(book);
     }
 
@@ -37,7 +40,11 @@ public class Service {
         return book;
     }
 
-    public void delete(Long id) {
+    public void delete(Long id) throws IOException {
+        List<FileAttachDocument> fileAttachDocuments = fileService.findByObjectId(id);
+        for (FileAttachDocument fileAttachDocument : fileAttachDocuments) {
+            fileService.delete(fileAttachDocument.getId());
+        }
         bookRepository.delete(id);
     }
 

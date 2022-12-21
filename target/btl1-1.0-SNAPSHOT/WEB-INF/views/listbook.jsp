@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
+<c:set var="contextPath" value="${request.getContextPath()}"/>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -27,35 +27,78 @@
 
 <!-- Page Wrapper -->
 <div class="flex">
-    <div class="w-64 " aria-label="Sidebar">
-        <div class="overflow-y-auto py-4 px-3 bg-gray-50 rounded dark:bg-gray-800 h-[100vh]">
+    <div class="w-64" aria-label="Sidebar">
+        <div class="overflow-y-auto py-4 px-1 bg-gray-800 rounded h-[100vh] ">
             <ul class="space-y-2">
                 <li>
-                    <a href="#" class="flex items-center p-2 text-base font-normal rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                        <svg aria-hidden="true" class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path><path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path></svg>
-                        <span class="ml-3 text-zinc-50	 hover:text-gray-900 dark:hover:text-white">
+                    <a href="${contextPath}/list"
+                       class="flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-500">
+                        <svg aria-hidden="true"
+                             class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                             fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
+                            <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
+                        </svg>
+                        <span class="ml-3 text-zinc-50 hover:text-gray-900">
                             Danh sách
                         </span>
                     </a>
                 </li>
-                <li>
-                    <a href="#" class="flex items-center p-2 text-base font-normal rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                        <svg aria-hidden="true" class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
-                        <span class="ml-3 text-zinc-50	 hover:text-gray-900 dark:hover:text-white">Thông tin tài khoản</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="${contextPath}/login?logout" class="flex items-center p-2 text-base font-normal  rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                        <svg aria-hidden="true" class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"></path></svg>
-                        <span class="ml-3  text-zinc-50	 hover:text-gray-900 dark:hover:text-white">Đăng xuất</span>
-                    </a>
-                </li>
+
+                <c:if test="${pageContext.request.userPrincipal != null}">
+                    <li>
+                        <a href="${contextPath}/logout"
+                           class="flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-500">
+                            <svg aria-hidden="true"
+                                 class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                                 fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                      d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1z"
+                                      clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="ml-3 text-zinc-50 hover:text-gray-900">
+                                Đăng xuất
+                            </span>
+                        </a>
+                    </li>
+                </c:if>
+                <c:if test="${pageContext.request.userPrincipal == null}">
+                    <li>
+                        <a href="${contextPath}/login"
+                           class="flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-500">
+                            <svg aria-hidden="true"
+                                 class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                                 fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                      d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1z"
+                                      clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="ml-3 text-zinc-50 hover:text-gray-900">
+                                Đăng nhập
+                            </span>
+                        </a>
+                    </li>
+                </c:if>
+
+<%--                <li>--%>
+<%--                    <a href="#"--%>
+<%--                       class="flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-500">--%>
+<%--                        <svg aria-hidden="true"--%>
+<%--                             class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"--%>
+<%--                             fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">--%>
+<%--                            <path fill-rule="evenodd"--%>
+<%--                                  d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z"--%>
+<%--                                  clip-rule="evenodd"></path>--%>
+<%--                        </svg>--%>
+<%--                        <span class="ml-3  text-zinc-50	 hover:text-gray-900 dark:hover:text-white">Đăng xuất</span>--%>
+<%--                    </a>--%>
+<%--                </li>--%>
+
             </ul>
         </div>
     </div>
-
-    <!-- Content Wrapper -->
-    <div id="content-wrapper" class="flex flex-column w-full m-3">
+    <%--    with = 100% - slidebar--%>
+    <div class="w-[calc(100%-20rem)] p-3">
 
         <div class="mb-3">
             <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="window.location.href='${contextPath}/create'">
@@ -83,26 +126,6 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-<%--                                <tr>--%>
-<%--                                    <td>Tiger Nixon</td>--%>
-<%--                                    <td>System Architect</td>--%>
-<%--                                    <td>Edinburgh</td>--%>
-<%--                                    <td>61</td>--%>
-<%--                                    <td>2011/04/25</td>--%>
-<%--                                    <td>$320,800</td>--%>
-<%--                                    <td>--%>
-<%--&lt;%&ndash;                                        view detail&ndash;%&gt;--%>
-<%--                                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">--%>
-<%--                                            Xem--%>
-<%--                                        </button>--%>
-<%--                                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">--%>
-<%--                                            Sửa--%>
-<%--                                        </button>--%>
-<%--                                        <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">--%>
-<%--                                            Xóa--%>
-<%--                                        </button>--%>
-<%--                                    </td>--%>
-<%--                                </tr>--%>
 
                                 <c:forEach items="${books}" var="item">
                                     <tr>
@@ -128,14 +151,17 @@
                                             </c:choose>
                                         </td>
                                         <td>
-                                            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                                                    onclick="window.location.href='${contextPath}/detailOredit/${item.id}'">
-                                                Sửa
-                                            </button>
-                                            <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                                                    onclick="window.location.href='${contextPath}/delete/${item.id}'">
-                                                Xóa
-                                            </button>
+<%--                                            show when login--%>
+                                            <c:if test="${pageContext.request.userPrincipal != null}">
+                                                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                                        onclick="window.location.href='${contextPath}/detailOredit/${item.id}'">
+                                                    Sửa
+                                                </button>
+                                                <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                                                        onclick="window.location.href='${contextPath}/delete?id=${item.id}'">
+                                                    Xóa
+                                                </button>
+                                            </c:if>
                                         </td>
                                     </tr>
                                 </c:forEach>

@@ -8,8 +8,8 @@
 		http://www.springframework.org/schema/security/spring-security.xsd">
 
     <http auto-config="true">
-        <intercept-url pattern="/" access="hasRole('ROLE_USER')"/>
-        <intercept-url pattern="/list" access="hasRole('ROLE_USER')"/>
+<!--        <intercept-url pattern="/" access="hasRole('ROLE_USER')"/>-->
+<!--        <intercept-url pattern="/list" access="hasRole('ROLE_USER')"/>-->
         <intercept-url pattern="/save" access="hasRole('ROLE_USER')"/>
         <intercept-url pattern="/search" access="hasRole('ROLE_USER')"/>
         <intercept-url pattern="/delete" access="hasRole('ROLE_USER')"/>

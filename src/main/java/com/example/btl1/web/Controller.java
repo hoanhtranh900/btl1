@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
@@ -79,13 +80,19 @@ public class Controller {
         return modelAndView;
     }
 
-    @RequestMapping(value = {"/create",}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/create"}, method = RequestMethod.GET)
     public ModelAndView createProductPage() {
         ModelAndView modelAndView = new ModelAndView();
         Book book = new Book();
         modelAndView.addObject("book", book);
         modelAndView.setViewName("/create-product");
         return modelAndView;
+    }
+
+    @RequestMapping(value = {"/logout"}, method = RequestMethod.GET)
+    public String logout(HttpSession session ) {
+        session.invalidate();
+        return "redirect:/login";
     }
 
 
@@ -108,7 +115,15 @@ public class Controller {
             return modelAndView;
         }
         service.save(book);
-        FileAttachDocument fileAttachDocument = fileService.uploadFile(file, book.getId());
+        //delete current file
+        List<FileAttachDocument> fileAttachDocuments = fileService.findByObjectId(book.getId());
+        for (FileAttachDocument fileAttachDocument : fileAttachDocuments) {
+            fileService.delete(fileAttachDocument.getId());
+        }
+
+        if(file.getSize() > 0) {
+            fileService.uploadFile(file, book.getId());
+        }
 
 
         return new ModelAndView("redirect:/list");
@@ -124,7 +139,7 @@ public class Controller {
     }
 
     @RequestMapping("/delete")
-    public String deleteCustomerForm(@RequestParam long id) {
+    public String deleteCustomerForm(@RequestParam("id") long id) throws IOException {
         service.delete(id);
         return "redirect:/list";
     }
