@@ -1,22 +1,36 @@
 package com.example.btl1.web;
 
+import com.example.btl1.DTO.CartDTO;
 import com.example.btl1.model.Book;
 import com.example.btl1.model.FileAttachDocument;
+import com.example.btl1.model.OrderBook;
 import com.example.btl1.model.User;
 import com.example.btl1.service.FileService;
 import com.example.btl1.service.SecurityService;
 import com.example.btl1.service.Service;
 import com.example.btl1.service.UserService;
+import com.example.btl1.utils.H;
 import com.example.btl1.validator.UserValidator;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @org.springframework.stereotype.Controller
@@ -71,10 +85,11 @@ public class Controller {
     }
 
     @RequestMapping(value = {"/", "/list"}, method = RequestMethod.GET)
-    public ModelAndView welcome() {
-
+    public ModelAndView welcome(@ModelAttribute("message") String message, @ModelAttribute("messageType") String messageType) {
         ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("messageType", messageType);
         modelAndView.setViewName("listbook");
+
         List<Book> books = service.findAll();
         modelAndView.addObject("books", books);
         return modelAndView;
@@ -115,13 +130,12 @@ public class Controller {
             return modelAndView;
         }
         service.save(book);
-        //delete current file
-        List<FileAttachDocument> fileAttachDocuments = fileService.findByObjectId(book.getId());
-        for (FileAttachDocument fileAttachDocument : fileAttachDocuments) {
-            fileService.delete(fileAttachDocument.getId());
-        }
-
         if(file.getSize() > 0) {
+            //delete current file
+            List<FileAttachDocument> fileAttachDocuments = fileService.findByObjectId(book.getId());
+            for (FileAttachDocument fileAttachDocument : fileAttachDocuments) {
+                fileService.delete(fileAttachDocument.getId());
+            }
             fileService.uploadFile(file, book.getId());
         }
 
@@ -143,4 +157,68 @@ public class Controller {
         service.delete(id);
         return "redirect:/list";
     }
+
+    @RequestMapping(path = "/downloadFile/{productId}", method = RequestMethod.GET)
+    public ResponseEntity<InputStreamResource> downloadFile(HttpServletResponse response, @PathVariable Long productId) throws Exception {
+        return fileService.downloadFile(response, productId);
+    }
+
+    //cart
+    //1. get ui
+    @RequestMapping(value = {"/cart"}, method = RequestMethod.GET)
+    public ModelAndView cart() {
+
+        ModelAndView modelAndView = new ModelAndView();
+        //get data cart from local storage and set to model
+
+
+        modelAndView.setViewName("cart");
+        return modelAndView;
+    }
+    //2. order
+    @RequestMapping(value = {"/save-order"}, method = RequestMethod.POST)
+    public ModelAndView saveOrder(
+            HttpServletRequest request,
+            RedirectAttributes resp
+    ) throws IOException {
+        ModelAndView modelAndView = new ModelAndView();
+        System.out.println(request);
+        System.out.println("save order");
+
+
+        String address = request.getParameter("address");
+        String totalMoney = request.getParameter("totalMoney");
+        String cartJSON = request.getParameter("cart");
+
+        List<CartDTO> cartDTOS = H.isTrue(cartJSON)  ? new Gson().fromJson(cartJSON, new TypeToken<List<CartDTO>>(){}.getType()) : new ArrayList<>();
+
+        //save orderbook
+        if(cartDTOS.size()>0) {
+            for (CartDTO cartDTO : cartDTOS) {
+                OrderBook orderBook = new OrderBook();
+                orderBook.setAddress(address);
+                orderBook.setTotal(Long.valueOf(totalMoney));
+                orderBook.setStatus(1);
+                orderBook.setBook(service.get(cartDTO.getId()));
+                orderBook.setUser(userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
+                orderBook.setBuyDate(new Date());
+                service.saveOrderBook(orderBook);
+            }
+            resp.addFlashAttribute("messageType", "99");
+        }
+        else {
+            modelAndView.addObject("message", "Giỏ hàng trống");
+            modelAndView.setViewName("cart");
+            return modelAndView;
+        }
+        if (!H.isTrue(address)) {
+            modelAndView.addObject("message", "Vui lòng nhập địa chỉ");
+            modelAndView.setViewName("cart");
+            return modelAndView;
+        }
+
+        //redirect
+        return new ModelAndView("redirect:/list");
+    }
+
 }

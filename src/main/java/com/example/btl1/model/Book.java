@@ -24,6 +24,7 @@ public class Book {
     private Date publishedDate;
     private int pages;
     private int type;
+    private Long price;
 
     @Transient
     private String image;

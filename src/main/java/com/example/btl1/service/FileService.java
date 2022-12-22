@@ -5,11 +5,17 @@ import com.example.btl1.repository.FileAttachDocumentRepository;
 import com.example.btl1.utils.H;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.URL;
 import java.nio.file.*;
 import java.util.Base64;
 import java.util.List;
@@ -116,4 +122,52 @@ public class FileService {
 
         attachDocumentRepository.delete(id);
     }
+
+//    public ResponseEntity<InputStreamResource> downloadFile(HttpServletResponse response, Long attachmentId, DownloadOption downloadOption) throws Exception {
+//        Optional<FileAttachment> attachmentOpt = attachmentRepository.findByIdAndIsDelete(attachmentId, ConstantString.IS_DELETE.active);
+//        if (!attachmentOpt.isPresent()) {
+//            throw new BadRequestException(
+//                    messageSource.getMessage("error.ENTITY_NOT_FOUND", new Object[]{"File"}, UtilsCommon.getLocale())
+//            );
+//        }
+//        FileAttachment attachment = attachmentOpt.get();
+//        InputStream inputStream = storageService.getInputStream(attachmentDocumentService.get(attachment.getFileServiceId()).get());
+//        String contentType = H.isTrue(downloadOption.getType()) ? downloadOption.getType() : attachment.getContentType();
+//        return ResponseEntity.ok()
+//                .header(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + UtilsString.encodeStringToUrlParam(attachment.getFileName()))
+//                .contentType(MediaType.valueOf(contentType))
+//                .body(new InputStreamResource(inputStream));
+//
+//    }
+    public ResponseEntity<InputStreamResource> downloadFile(HttpServletResponse response, Long productId) {
+        List<FileAttachDocument> fileAttachDocuments = attachDocumentRepository.findByObjectId(productId);
+        if(fileAttachDocuments.size() > 0 ) {
+            FileAttachDocument fileAttachDocument = fileAttachDocuments.get(0);
+            try {
+                InputStream inputStream = new FileInputStream(fileAttachDocument.getFilePath());
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + fileAttachDocument.getFileName())
+                        .contentType(MediaType.valueOf("application/octet-stream"))
+                        .body(new InputStreamResource(inputStream));
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        else {
+            //return empty image
+            //https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg
+            //convert image in link to inputstream
+            try {
+                InputStream inputStream = new URL("https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg").openStream();
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + "empty.jpg")
+                        .contentType(MediaType.valueOf("application/octet-stream"))
+                        .body(new InputStreamResource(inputStream));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+
 }

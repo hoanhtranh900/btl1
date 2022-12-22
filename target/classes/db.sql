@@ -1,3 +1,6 @@
+
+
+
 CREATE DATABASE  IF NOT EXISTS `btl1`;
 USE `btl1`;
 --
@@ -6,7 +9,7 @@ USE `btl1`;
 
 DROP TABLE IF EXISTS `role`;
 CREATE TABLE `role` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
   `name` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
@@ -17,6 +20,8 @@ CREATE TABLE `role` (
 
 LOCK TABLES `role` WRITE;
 INSERT INTO `role` VALUES (1,'ROLE_USER');
+INSERT INTO `role` VALUES (2,'ROLE_ADMIN');
+
 UNLOCK TABLES;
 
 --
@@ -25,7 +30,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
   `username` varchar(255) DEFAULT NULL,
   `fullName` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
@@ -39,8 +44,8 @@ CREATE TABLE `user` (
 
 DROP TABLE IF EXISTS `user_role`;
 CREATE TABLE `user_role` (
-  `user_id` int(11) NOT NULL,
-  `role_id` int(11) NOT NULL,
+  `user_id` BIGINT NOT NULL,
+  `role_id` BIGINT NOT NULL,
   PRIMARY KEY (`user_id`,`role_id`),
   KEY `fk_user_role_roleid_idx` (`role_id`),
   CONSTRAINT `fk_user_role_roleid` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -57,6 +62,7 @@ CREATE TABLE Book
     publishedDate datetime              NULL,
     pages         INT                   NOT NULL,
     type          VARCHAR(255)          NULL,
+    price         BIGINT                   NOT NULL,
     CONSTRAINT pk_book PRIMARY KEY (id)
 );
 
@@ -69,4 +75,21 @@ CREATE TABLE FileAttachDocument
     FILE_PATH VARCHAR(1000)         NULL,
     FILE_SIZE BIGINT                NULL,
     CONSTRAINT pk_fileattachdocument PRIMARY KEY (id)
+);
+
+-- order_book
+DROP TABLE IF EXISTS `order_book`;
+CREATE TABLE order_book
+(
+    id        BIGINT AUTO_INCREMENT NOT NULL,
+    book_id   BIGINT                NULL,
+    user_id   BIGINT                NULL,
+    quantity  INT                   NULL,
+    total     BIGINT                   NULL,
+    status    INT                   NULL,
+    buy_date  datetime              NULL,
+    address   VARCHAR(255)          NULL,
+    CONSTRAINT pk_order_book PRIMARY KEY (id),
+    CONSTRAINT fk_order_book_book_id FOREIGN KEY (book_id) REFERENCES book (id),
+    CONSTRAINT fk_order_book_user_id FOREIGN KEY (user_id) REFERENCES user (id)
 );

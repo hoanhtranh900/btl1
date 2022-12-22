@@ -2,7 +2,9 @@ package com.example.btl1.service;
 
 import com.example.btl1.model.Book;
 import com.example.btl1.model.FileAttachDocument;
+import com.example.btl1.model.OrderBook;
 import com.example.btl1.repository.BookRepository;
+import com.example.btl1.repository.OrderBookRepository;
 import com.example.btl1.utils.H;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.*;
@@ -15,6 +17,8 @@ public class Service {
     private String errorMessage;
     @Autowired
     private BookRepository bookRepository;
+    @Autowired
+    private OrderBookRepository orderBookRepository;
 
     @Autowired
     private FileService fileService;
@@ -93,5 +97,9 @@ public class Service {
 
     public List<Book> findAll() {
         return bookRepository.findAll();
+    }
+
+    public void saveOrderBook(OrderBook orderBook) {
+        orderBookRepository.save(orderBook);
     }
 }

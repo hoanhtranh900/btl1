@@ -26,76 +26,7 @@
 
 <body>
 <div class="flex">
-    <div class="w-64" aria-label="Sidebar">
-        <div class="overflow-y-auto py-4 px-1 bg-gray-800 rounded h-[100vh] ">
-            <ul class="space-y-2">
-                <li>
-                    <a href="${contextPath}/list"
-                       class="flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-500">
-                        <svg aria-hidden="true"
-                             class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                             fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
-                            <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
-                        </svg>
-                        <span class="ml-3 text-zinc-50 hover:text-gray-900">
-                            Danh sách
-                        </span>
-                    </a>
-                </li>
-
-                <c:if test="${pageContext.request.userPrincipal != null}">
-                    <li>
-                        <a href="${contextPath}/logout"
-                           class="flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-500">
-                            <svg aria-hidden="true"
-                                 class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                 fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                      d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1z"
-                                      clip-rule="evenodd"></path>
-                            </svg>
-                            <span class="ml-3 text-zinc-50 hover:text-gray-900">
-                                Đăng xuất
-                            </span>
-                        </a>
-                    </li>
-                </c:if>
-                <c:if test="${pageContext.request.userPrincipal == null}">
-                    <li>
-                        <a href="${contextPath}/login"
-                           class="flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-500">
-                            <svg aria-hidden="true"
-                                 class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                 fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                      d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1z"
-                                      clip-rule="evenodd"></path>
-                            </svg>
-                            <span class="ml-3 text-zinc-50 hover:text-gray-900">
-                                Đăng nhập
-                            </span>
-                        </a>
-                    </li>
-                </c:if>
-
-                <%--                <li>--%>
-                <%--                    <a href="#"--%>
-                <%--                       class="flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-500">--%>
-                <%--                        <svg aria-hidden="true"--%>
-                <%--                             class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"--%>
-                <%--                             fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">--%>
-                <%--                            <path fill-rule="evenodd"--%>
-                <%--                                  d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z"--%>
-                <%--                                  clip-rule="evenodd"></path>--%>
-                <%--                        </svg>--%>
-                <%--                        <span class="ml-3  text-zinc-50	 hover:text-gray-900 dark:hover:text-white">Đăng xuất</span>--%>
-                <%--                    </a>--%>
-                <%--                </li>--%>
-
-            </ul>
-        </div>
-    </div>
+    <jsp:include page="slidebar.jsp"></jsp:include>
     <%--    with = 100% - slidebar--%>
     <div class="w-[calc(100%-20rem)]">
         <form action="/save" method="post" id="form-create" class="w-full m-3" enctype="multipart/form-data">
@@ -146,7 +77,7 @@
 
                     <%--            publish date and pages--%>
                     <div class="flex flex-wrap -mx-3 mb-6">
-                        <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                        <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
                             <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
                                 Ngày phát hành
                             </label>
@@ -159,7 +90,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                        <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
                             <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                                    for="grid-pages">
                                 Số trang
@@ -167,6 +98,15 @@
                             <input name="pages" value="${book.pages}"
                                    class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                    id="grid-pages" type="number"/>
+                        </div>
+                        <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                                   for="grid-pages">
+                                Giá
+                            </label>
+                            <input name="price" value="${book.price}"
+                                   class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                   type="number"/>
                         </div>
                     </div>
 

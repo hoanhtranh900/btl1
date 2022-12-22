@@ -1,5 +1,6 @@
 package com.example.btl1.service;
 
+import com.example.btl1.model.Role;
 import com.example.btl1.model.User;
 import com.example.btl1.repository.RoleRepository;
 import com.example.btl1.repository.UserRepository;
@@ -21,7 +22,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void save(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        user.setRoles(new HashSet<>(roleRepository.findAll()));
+        Role userRole = roleRepository.findByName("ROLE_USER");
+        user.setRoles(new HashSet<Role>() {{
+            add(userRole);
+        }});
         userRepository.save(user);
     }
 

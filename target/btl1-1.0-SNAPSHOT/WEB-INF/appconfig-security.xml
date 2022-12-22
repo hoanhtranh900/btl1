@@ -10,10 +10,11 @@
     <http auto-config="true">
 <!--        <intercept-url pattern="/" access="hasRole('ROLE_USER')"/>-->
 <!--        <intercept-url pattern="/list" access="hasRole('ROLE_USER')"/>-->
-        <intercept-url pattern="/save" access="hasRole('ROLE_USER')"/>
-        <intercept-url pattern="/search" access="hasRole('ROLE_USER')"/>
-        <intercept-url pattern="/delete" access="hasRole('ROLE_USER')"/>
-        <intercept-url pattern="/create" access="hasRole('ROLE_USER')"/>
+        <intercept-url pattern="/save" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/search" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/delete" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/cart" access="hasRole('ROLE_USER')"/>
+        <intercept-url pattern="/create" access="hasRole('ROLE_ADMIN')"/>
         <form-login login-page="/login" default-target-url="/list" authentication-failure-url="/login?error" username-parameter="username" password-parameter="password"/>
         <logout logout-success-url="/login?logout" />
 
