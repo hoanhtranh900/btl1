@@ -1,5 +1,6 @@
 package com.example.btl1.model;
 
+import com.example.btl1.utils.H;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -31,6 +32,11 @@ public class OrderBook {
     //trạng thái
     private int status;
 
+    private String phone;
+
+    @Column(name = "order_history_id")
+    private String orderHistoryId;
+
     //ngày mua
     @Column(name="buy_date")
     private Date buyDate;
@@ -38,7 +44,36 @@ public class OrderBook {
     //địa chỉ giao hàng
     private String address;
 
+    @Transient
+    private String statusString;
 
+    @Transient
+    private String buyDateString;
 
+    @Transient
+    private String moneyConvert;
 
+    public String getMoneyConvert() {
+        //convert to 1.000.000
+        return H.convertMoney(total);
+    }
+
+    public String getStatusString() {
+        switch (status) {
+            case 0:
+                return "Đang chờ xử lý";
+            case 1:
+                return "Đang giao hàng";
+            case 2:
+                return "Đã giao hàng";
+            case 3:
+                return "Đã hủy";
+            default:
+                return "Đang chờ xử lý";
+        }
+    }
+
+    public String getBuyDateString() {
+        return H.date2str(buyDate, "dd/MM/yyyy HH:mm");
+    }
 }

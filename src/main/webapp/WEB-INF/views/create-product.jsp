@@ -1,6 +1,6 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
 <c:set var="contextPath" value="${request.getContextPath()}"/>
 
@@ -15,7 +15,8 @@
 
     <title>page2</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link
             href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
             rel="stylesheet">
@@ -29,11 +30,39 @@
     <jsp:include page="slidebar.jsp"></jsp:include>
     <%--    with = 100% - slidebar--%>
     <div class="w-[calc(100%-20rem)]">
+        <div class="my-3 d-flex justify-content-between">
+            <div>
+                <c:if test="${pageContext.request.isUserInRole('ROLE_ADMIN')}">
+
+                </c:if>
+            </div>
+            <c:if test="${pageContext.request.isUserInRole('ROLE_USER')}">
+
+                <%--            number of cart--%>
+                <div class="flex items-center">
+                    <button class="flex items-center justify-center flex-shrink-0 h-auto relative focus:outline-none transform"
+                            aria-label="cart-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18px" height="18px" viewBox="0 0 20 20"
+                             class="md:w-4 xl:w-5 md:h-4 xl:h-5">
+                            <path d="M5,4H19a1,1,0,0,1,1,1V19a1,1,0,0,1-1,1H5a1,1,0,0,1-1-1V5A1,1,0,0,1,5,4ZM2,5A3,3,0,0,1,5,2H19a3,3,0,0,1,3,3V19a3,3,0,0,1-3,3H5a3,3,0,0,1-3-3Zm10,7C9.239,12,7,9.314,7,6H9c0,2.566,1.669,4,3,4s3-1.434,3-4h2C17,9.314,14.761,12,12,12Z"
+                                  transform="translate(-2 -2)" fill="currentColor" fill-rule="evenodd"></path>
+                        </svg>
+                        <span id="cart-number" class="cart-counter-badge
+                    min-w-[20px] min-h-[20px]
+                    flex items-center justify-center
+                    bg-heading text-white absolute
+                    -top-2.5 xl:-top-3 -right-3 -end-2.5 xl:-end-3 rounded-full font-bold bg-[#000] text-[#fff] ">0</span>
+                    </button>
+                </div>
+            </c:if>
+
+        </div>
+
         <form action="/save" method="post" id="form-create" class="w-full m-3" enctype="multipart/form-data">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             <input type="hidden" name="id" value="${book.id}"/>
+            <input type="hidden" name="currentRole" value="${pageContext.request.isUserInRole('ROLE_USER')}"/>
 
-            <h2>Thêm sách</h2>
 
             <div class="flex">
                 <div class="w-[50%]">
@@ -77,7 +106,7 @@
 
                     <%--            publish date and pages--%>
                     <div class="flex flex-wrap -mx-3 mb-6">
-                        <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
                             <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
                                 Ngày phát hành
                             </label>
@@ -90,7 +119,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
                             <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                                    for="grid-pages">
                                 Số trang
@@ -99,12 +128,21 @@
                                    class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                    id="grid-pages" type="number"/>
                         </div>
-                        <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
                             <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                                    for="grid-pages">
                                 Giá
                             </label>
                             <input name="price" value="${book.price}"
+                                   class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                   type="number"/>
+                        </div>
+                        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
+                            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                                   for="grid-pages">
+                                Số lượng còn lại
+                            </label>
+                            <input name="remain" value="${book.remain}"
                                    class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                    type="number"/>
                         </div>
@@ -139,12 +177,15 @@
                                        class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                        id="grid-image" type="file"/>
 
-                                <div class="delete-file-btn">
-                                    <button type="button" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                                            onclick="deleteFile()">
-                                        Xóa ảnh
-                                    </button>
-                                </div>
+                                <c:if test="${pageContext.request.isUserInRole('ROLE_ADMIN')}">
+                                    <div class="delete-file-btn">
+                                        <button type="button"
+                                                class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                                                onclick="deleteFile()">
+                                            Xóa ảnh
+                                        </button>
+                                    </div>
+                                </c:if>
                             </div>
                         </div>
 
@@ -156,18 +197,103 @@
 
 
             <%--            submit--%>
-            <div class="flex flex-wrap -mx-3 mb-6">
-                <div class="w-full px-3 mb-6 md:mb-0">
-                    <button type="button" onclick="checkSubmit()"
-                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                        Save
-                    </button>
+            <c:if test="${pageContext.request.isUserInRole('ROLE_ADMIN')}">
+                <div class="flex flex-wrap -mx-3 mb-6">
+                    <div class="w-full px-3 mb-6 md:mb-0">
+                        <button type="button" onclick="checkSubmit()"
+                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            Save
+                        </button>
+                    </div>
                 </div>
-            </div>
+            </c:if>
+            <c:if test="${pageContext.request.isUserInRole('ROLE_USER')}">
+                <%--                number book and add to cart--%>
+
+                <div class="flex flex-wrap -mx-3 mb-6">
+                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-3"
+                           for="grid-pages">
+                        Số lượng
+                    </label>
+                    <div class="flex w-full px-3 mb-6 md:mb-0">
+                        <div class="align-self-center">
+                            <input name="numberToBuy"
+                                   class="appearance-none block  bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                   id="numberToBuy"/>
+                        </div>
+                        <div class="align-self-center">
+                            <button type="button"
+                                    onclick="addToCart(${book.id}, '${book.title}', '${book.author}', '${book.description}', '${book.publishedDate}', '${book.pages}', '${book.type}', '${book.price}')"
+                                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                Thêm vào giỏ hàng
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+<%--                vote ( max is 5 and min is 1 ) --%>
+                <div class="flex flex-wrap -mx-3 mb-6">
+                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-3"
+                           for="grid-pages">
+                        Đánh giá
+                    </label>
+                    <div class="flex w-full px-3 mb-6 md:mb-0 gap-3">
+                        <div>
+                            <input name="vote" placeholder="Nội dung đánh giá"
+                                   class="appearance-none block  bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                   id="vote"/>
+                        </div>
+                        <div class="align-self center">
+                            <select class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="vote-star">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </div>
+                        <div class="align-self center">
+                            <button type="button"
+                                    onclick="vote(${book.id}, '${book.title}', '${book.author}', '${book.description}', '${book.publishedDate}', '${book.pages}', '${book.type}', '${book.price}')"
+                                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                Đánh giá
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </c:if>
         </form>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"
+        integrity="sha512-CryKbMe7sjSCDPl18jtJI5DR5jtkUWxPXWaLCst6QjH8wxDexfRJic2WRmRXmstr2Y8SxDDWuBO6CQC6IE4KTA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+<script src="${contextPath}/resources/js/script.js"></script>
+
 <script>
+    $(document).ready(function () {
+        //check role if has role_user disable all input, select
+        //get by name = currentRole
+        let currentRole = $("input[name='currentRole']").val();
+        if (currentRole) {
+            $("input").attr("disabled", true);
+            $("select").attr("disabled", true);
+            $("textarea").attr("disabled", true);
+            // $("button").attr("disabled", true);
+        }
+        // expect numberToBuy
+        $("input[name='numberToBuy']").attr("disabled", false);
+        $("input[name='vote']").attr("disabled", false);
+        //expect vote-star
+        $("select[id='vote-star']").attr("disabled", false);
+    });
+
+
     var deleteFile = function () {
         document.getElementById("output").src = "";
         document.getElementById("grid-image").value = "";
@@ -188,6 +314,70 @@
     <%--var publishDate = "${book.publishedDate}";--%>
     <%--document.getElementById("publish-date").value = publishDate;--%>
     <%--console.log(publishDate);--%>
+</script>
+<script>
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        //get number of cart from local storage
+        loadCart();
+    });
+
+    function loadCart() {
+        let cart = JSON.parse(localStorage.getItem("cart"));
+        if (cart == null) {
+            cart = [];
+        }
+        // check quantity per item
+        let cartNumber = 0;
+        cart.forEach(item => {
+            cartNumber += item.quantity;
+        })
+        document.getElementById("cart-number").innerText = cartNumber;
+    }
+
+    function addToCart(id, title, author, description, publishedDate, pages, type, price) {
+        let numberToBuy = document.getElementById("numberToBuy").value;
+        if (numberToBuy == null || numberToBuy == "") {
+            alert("Vui lòng nhập số lượng");
+            return;
+        }
+
+        let cart = JSON.parse(localStorage.getItem("cart"));
+        if (cart == null) {
+            cart = [];
+        }
+        for (let i = 0; i < numberToBuy; i++) {
+            let book = {
+                id: id,
+                title: title,
+                author: author,
+                description: description,
+                publishedDate: publishedDate,
+                price: price,
+                pages: pages,
+                type: type,
+                image: ${contextPath} +"/downloadFile/" + id,
+                quantity: 1
+            }
+            //if exist update quantity
+            let index = cart.findIndex(item => item.id == id);
+            if (index != -1) {
+                cart[index].quantity++;
+            } else {
+                cart.push(book);
+            }
+            localStorage.setItem("cart", JSON.stringify(cart));
+        }
+
+
+
+        loadCart();
+        alert('Thêm vào giỏ hàng thành công');
+        //clear numberToBuy
+        document.getElementById("numberToBuy").value = "";
+
+    }
 </script>
 <script>
     function checkSubmit() {
@@ -231,13 +421,6 @@
 
 </script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"
-        integrity="sha512-CryKbMe7sjSCDPl18jtJI5DR5jtkUWxPXWaLCst6QjH8wxDexfRJic2WRmRXmstr2Y8SxDDWuBO6CQC6IE4KTA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous"></script>
-<script src="${contextPath}/resources/js/script.js"></script>
 
 </body>
 </html>

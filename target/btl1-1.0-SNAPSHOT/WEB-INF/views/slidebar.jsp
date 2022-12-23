@@ -29,6 +29,39 @@
                         </span>
                 </a>
             </li>
+            <c:if test="${pageContext.request.isUserInRole('ROLE_USER')}">
+
+                <li>
+                    <a href="${contextPath}/cart"
+                       class="flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-500">
+                        <svg aria-hidden="true"
+                             class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                             fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
+                            <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
+                        </svg>
+                        <span class="ml-3 text-zinc-50 hover:text-gray-900">
+                            Giỏ hàng
+                        </span>
+                    </a>
+                </li>
+            </c:if>
+            <c:if test="${pageContext.request.isUserInRole('ROLE_USER')}">
+                <li>
+                    <a href="${contextPath}/history"
+                       class="flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-500">
+                        <svg aria-hidden="true"
+                             class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                             fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
+                            <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
+                        </svg>
+                        <span class="ml-3 text-zinc-50 hover:text-gray-900">
+                            Lịch sử đặt hàng
+                        </span>
+                    </a>
+                </li>
+            </c:if>
 
             <c:if test="${pageContext.request.userPrincipal != null}">
                 <li>
@@ -64,30 +97,13 @@
                     </a>
                 </li>
             </c:if>
-            <c:if test="${pageContext.request.isUserInRole('ROLE_USER')}">
-
-                <li>
-                    <a href="${contextPath}/cart"
-                       class="flex items-center p-2 text-base font-normal rounded-lg hover:bg-gray-500">
-                        <svg aria-hidden="true"
-                             class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                             fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
-                            <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
-                        </svg>
-                        <span class="ml-3 text-zinc-50 hover:text-gray-900">
-                            Giỏ hàng
-                        </span>
-                    </a>
-                </li>
-            </c:if>
-
 
 
         </ul>
     </div>
 </div>
-<div role="alert" aria-live="assertive" aria-atomic="true"  data-delay="5000" id="toast-id" class="toast position-fixed top-[15px] right-[15px] z-50" >
+<div role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000" id="toast-id"
+     class="toast position-fixed top-[15px] right-[15px] z-50">
     <div class="toast-body" id="message-toast">
 
     </div>

@@ -60,9 +60,10 @@ CREATE TABLE Book
     title         VARCHAR(255)          NULL,
     `description` VARCHAR(255)          NULL,
     publishedDate datetime              NULL,
-    pages         INT                   NOT NULL,
-    type          VARCHAR(255)          NULL,
-    price         BIGINT                   NOT NULL,
+    pages         INT                   NULL,
+    type          INT                   NULL,
+    remain     INT                      NULL,
+    price         BIGINT                NULL,
     CONSTRAINT pk_book PRIMARY KEY (id)
 );
 
@@ -89,7 +90,23 @@ CREATE TABLE order_book
     status    INT                   NULL,
     buy_date  datetime              NULL,
     address   VARCHAR(255)          NULL,
+    phone    VARCHAR(255)          NULL,
+    order_history_id VARCHAR(255)          NULL,
     CONSTRAINT pk_order_book PRIMARY KEY (id),
     CONSTRAINT fk_order_book_book_id FOREIGN KEY (book_id) REFERENCES book (id),
     CONSTRAINT fk_order_book_user_id FOREIGN KEY (user_id) REFERENCES user (id)
+);
+
+--vote
+DROP TABLE IF EXISTS `vote`;
+CREATE TABLE vote
+(
+    id        BIGINT AUTO_INCREMENT NOT NULL,
+    book_id   BIGINT                NULL,
+    user_id   BIGINT                NULL,
+    vote      INT                   NULL,
+    comment   VARCHAR(255)          NULL,
+    CONSTRAINT pk_vote PRIMARY KEY (id),
+    CONSTRAINT fk_vote_book_id FOREIGN KEY (book_id) REFERENCES book (id),
+    CONSTRAINT fk_vote_user_id FOREIGN KEY (user_id) REFERENCES user (id)
 );

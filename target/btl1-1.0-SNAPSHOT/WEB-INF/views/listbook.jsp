@@ -79,7 +79,8 @@
                                     <th>Sản phẩm</th>
                                     <th>Tiêu đề</th>
                                     <th>Tác giả</th>
-                                    <th class="w-[30%]">Mô tả</th>
+                                    <th class="w-[20%]">Mô tả</th>
+                                    <th>số lượng còn lại</th>
                                     <th>Ngày phát hành</th>
                                     <th>Số trang</th>
                                     <th>Thể loại</th>
@@ -98,6 +99,7 @@
                                         <td>${item.title}</td>
                                         <td>${item.author}</td>
                                         <td>${item.description}</td>
+                                        <td>${item.remain}</td>
                                         <td>${item.publishedDate}</td>
                                         <td>${item.pages}</td>
                                         <td>
@@ -126,10 +128,14 @@
                                                         Xem chi tiết
                                                     </button>
                                                     <%--                                                   add to cart--%>
-                                                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                                                            onclick="addToCart(${item.id}, '${item.title}', '${item.author}', '${item.description}', '${item.publishedDate}', '${item.pages}', '${item.type}', '${item.price}')">
-                                                        Thêm vào giỏ hàng
-                                                    </button>
+                                                    <%--                                                    check remain--%>
+                                                    <c:if test="${item.remain > 0}">
+                                                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                                                onclick="addToCart(${item.id}, '${item.title}', '${item.author}', '${item.description}', '${item.publishedDate}', '${item.pages}', '${item.type}', '${item.price}')">
+                                                            Thêm vào giỏ hàng
+                                                        </button>
+                                                    </c:if>
+
                                                 </c:if>
                                                 <c:if test="${pageContext.request.isUserInRole('ROLE_ADMIN')}">
                                                     <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"

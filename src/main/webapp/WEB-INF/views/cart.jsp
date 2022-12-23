@@ -53,32 +53,7 @@
                         <h3 class="font-semibold text-center text-gray-600 text-xs uppercase w-1/5 text-center">Tổng
                             tiền</h3>
                     </div>
-                    <%--                    <div class="flex items-center hover:bg-gray-100 -mx-8 px-6 py-5">--%>
-                    <%--                        <div class="flex w-2/5"> <!-- product -->--%>
-                    <%--                            <div class="w-20">--%>
-                    <%--                                <img class="h-24" src="http://localhost:8080/downloadFile/1"--%>
-                    <%--                                     alt="">--%>
-                    <%--                            </div>--%>
-                    <%--                            <div class="flex flex-col justify-between ml-4 flex-grow">--%>
-                    <%--                                <span class="font-bold text-sm">Iphone 6S</span>--%>
-                    <%--                                <span class="text-red-500 text-xs">Apple</span>--%>
-                    <%--                                <a href="#" class="font-semibold hover:text-red-500 text-gray-500 text-xs">Remove</a>--%>
-                    <%--                            </div>--%>
-                    <%--                        </div>--%>
-                    <%--                        <div class="flex justify-center w-1/5">--%>
-                    <%--                            <svg class="fill-current text-gray-600 w-3" viewBox="0 0 448 512">--%>
-                    <%--                                <path d="M416 208H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h384c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"/>--%>
-                    <%--                            </svg>--%>
 
-                    <%--                            <input class="mx-2 border text-center w-8" type="text" value="1">--%>
-
-                    <%--                            <svg class="fill-current text-gray-600 w-3" viewBox="0 0 448 512">--%>
-                    <%--                                <path d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"/>--%>
-                    <%--                            </svg>--%>
-                    <%--                        </div>--%>
-                    <%--                        <span class="text-center w-1/5 font-semibold text-sm">$400.00</span>--%>
-                    <%--                        <span class="text-center w-1/5 font-semibold text-sm">$400.00</span>--%>
-                    <%--                    </div>--%>
                     <div id="list-product">
 
                     </div>
@@ -95,6 +70,13 @@
                         <div class="block p-2 text-gray-600 w-full text-sm">
                             <div>Phí giao hàng: 15000</div>
                         </div>
+                    </div>
+                    <div class="py-2">
+                        <label class="font-medium inline-block mb-3 text-sm uppercase">Số điện thoại</label>
+                        <input id="phone"
+                               class="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
+                               type="text" placeholder="Nhập địa chỉ" aria-label="dia chi">
+
                     </div>
                     <div class="py-2">
                         <label class="font-medium inline-block mb-3 text-sm uppercase">Địa chỉ nhận hàng</label>
@@ -122,7 +104,25 @@
     </div>
 
 </body>
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"
+        integrity="sha512-CryKbMe7sjSCDPl18jtJI5DR5jtkUWxPXWaLCst6QjH8wxDexfRJic2WRmRXmstr2Y8SxDDWuBO6CQC6IE4KTA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+<script src="${contextPath}/resources/js/script.js"></script>
 <script>
+    $(document).ready(function () {
+        // edit url
+        var url = window.location.href;
+        //check if not end with = cart then change to cart
+        if (!url.endsWith("cart")) {
+            window.location.href =  "/cart";
+        }
+    });
+
     document.addEventListener("DOMContentLoaded", function () {
         //check if have message error
         var message = "${message}";
@@ -223,7 +223,7 @@
         let stringCart = localStorage.getItem('cart').toString().trim();
 
         //calulate total money
-        let totalMoney = 0;
+        let totalMoney = 15000;
         if (cart.length > 0) {
             for (let i = 0; i < cart.length; i++) {
                 let product = cart[i];
@@ -232,11 +232,13 @@
                 totalMoney += (Number(price) * Number(quantity));
             }
             let address = document.getElementById('address').value;
+            let phone = document.getElementById('phone').value;
             // add data to id = hide-input
             let hideInput = document.getElementById('hide-input');
             hideInput.innerHTML = `
                 <input type="hidden" name="totalMoney" value="` + totalMoney + `">
                 <input type="hidden" name="address" value="` + address + `">
+                <input type="hidden" name="phone" value="` + phone + `">
                 <textarea name="cart" style="display: none">` + stringCart + `</textarea>
 
             `;
@@ -247,21 +249,14 @@
             hideInput.innerHTML = `
                 <input type="hidden" name="totalMoney" value="">
                 <input type="hidden" name="address" value="">
+                <input type="hidden" name="phone" value="">
                 <textarea name="cart" style="display: none"></textarea>
                 `
         }
 
     }
 </script>
-<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"
-        integrity="sha512-CryKbMe7sjSCDPl18jtJI5DR5jtkUWxPXWaLCst6QjH8wxDexfRJic2WRmRXmstr2Y8SxDDWuBO6CQC6IE4KTA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous"></script>
-<script src="${contextPath}/resources/js/script.js"></script>
 
 </body>
 </html>

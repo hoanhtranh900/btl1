@@ -1,6 +1,7 @@
 package com.example.btl1.model;
 
 
+import com.example.btl1.utils.H;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,7 +27,15 @@ public class Book {
     private int type;
     private Long price;
 
+    //số lượng còn lại
+    private int remain = 0;
+
     @Transient
     private String image;
+    @Transient
+    private String priceString;
 
+    public String getPriceString() {
+        return H.convertMoney(price);
+    }
 }

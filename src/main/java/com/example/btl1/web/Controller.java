@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Controller
 public class Controller {
@@ -187,6 +188,7 @@ public class Controller {
 
 
         String address = request.getParameter("address");
+        String phone = request.getParameter("phone");
         String totalMoney = request.getParameter("totalMoney");
         String cartJSON = request.getParameter("cart");
 
@@ -194,6 +196,16 @@ public class Controller {
 
         //save orderbook
         if(cartDTOS.size()>0) {
+            //check quantity vs remain
+            for (CartDTO cartDTO : cartDTOS) {
+                Book book = service.get(cartDTO.getId());
+                if(book.getRemain() < cartDTO.getQuantity()) {
+                    modelAndView.addObject("message", "Số lượng sách " + book.getTitle() + " không đủ");
+                    modelAndView.setViewName("cart");
+                    return modelAndView;
+                }
+            }
+            List<OrderBook> orderBooks = new ArrayList<>();
             for (CartDTO cartDTO : cartDTOS) {
                 OrderBook orderBook = new OrderBook();
                 orderBook.setAddress(address);
@@ -202,8 +214,20 @@ public class Controller {
                 orderBook.setBook(service.get(cartDTO.getId()));
                 orderBook.setUser(userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
                 orderBook.setBuyDate(new Date());
+                orderBook.setPhone(phone);
+                orderBook.setQuantity(cartDTO.getQuantity());
+                service.saveOrderBook(orderBook);
+                orderBooks.add(orderBook);
+            }
+
+//            get order histort id = id per order
+            String orderHistoryId = orderBooks.stream().map(orderBook -> orderBook.getId().toString()).collect(Collectors.joining("_"));
+            for (OrderBook orderBook : orderBooks) {
+                orderBook.setOrderHistoryId(orderHistoryId);
                 service.saveOrderBook(orderBook);
             }
+
+
             resp.addFlashAttribute("messageType", "99");
         }
         else {
@@ -211,14 +235,26 @@ public class Controller {
             modelAndView.setViewName("cart");
             return modelAndView;
         }
-        if (!H.isTrue(address)) {
-            modelAndView.addObject("message", "Vui lòng nhập địa chỉ");
+        if (!H.isTrue(address) || !H.isTrue(phone)) {
+            modelAndView.addObject("message", "Vui lòng nhập địa chỉ hoặc số điện thoại");
             modelAndView.setViewName("cart");
             return modelAndView;
         }
+
 
         //redirect
         return new ModelAndView("redirect:/list");
     }
 
+
+    //history
+    @RequestMapping(value = {"/history"}, method = RequestMethod.GET)
+    public ModelAndView history() {
+        List<OrderBook> orderBooks = service.findAllOrderBook();
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("orderBooks", orderBooks);
+        modelAndView.setViewName("history");
+        return modelAndView;
+    }
 }

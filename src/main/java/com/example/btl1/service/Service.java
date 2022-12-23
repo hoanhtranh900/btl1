@@ -74,6 +74,22 @@ public class Service {
             errorMessage = "Tiêu đề bắt buộc nhập";
             return false;
         }
+        if (book.getPrice() == null) {
+            errorMessage = "Giá bắt buộc nhập";
+            return false;
+        }
+        if(!H.isTrue(book.getRemain())) {
+            errorMessage = "Số lượng bắt buộc nhập";
+            return false;
+        }
+        if(!H.isTrue(book.getPages())) {
+            errorMessage = "Số trang bắt buộc nhập";
+            return false;
+        }
+        if( book.getRemain() < 0 || book.getPages() < 0 || book.getPrice() < 0) {
+            errorMessage = "Số lượng, số trang, giá không được nhỏ hơn 0";
+            return false;
+        }
 
         //check exits by name
         List<Book> list = bookRepository.findAllByTitle(book.getTitle());
@@ -101,5 +117,11 @@ public class Service {
 
     public void saveOrderBook(OrderBook orderBook) {
         orderBookRepository.save(orderBook);
+    }
+
+    public List<OrderBook> findAllOrderBook() {
+        //order by buy date desc
+        return orderBookRepository.findByOrderByBuyDateDesc();
+//        return orderBookRepository.findAll();
     }
 }
