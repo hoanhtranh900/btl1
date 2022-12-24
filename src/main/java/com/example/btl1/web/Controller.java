@@ -1,16 +1,14 @@
 package com.example.btl1.web;
 
 import com.example.btl1.DTO.CartDTO;
-import com.example.btl1.model.Book;
-import com.example.btl1.model.FileAttachDocument;
-import com.example.btl1.model.OrderBook;
-import com.example.btl1.model.User;
+import com.example.btl1.model.*;
 import com.example.btl1.service.FileService;
 import com.example.btl1.service.SecurityService;
 import com.example.btl1.service.Service;
 import com.example.btl1.service.UserService;
 import com.example.btl1.utils.H;
 import com.example.btl1.validator.UserValidator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.hibernate.criterion.Order;
@@ -33,8 +31,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.transaction.annotation.Transactional;
 
 @org.springframework.stereotype.Controller
+@Transactional(rollbackFor = Exception.class)
 public class Controller {
     @Autowired
     private UserService userService;
@@ -116,6 +116,17 @@ public class Controller {
     public ModelAndView editProductPage(@PathVariable("id") Long id) {
         ModelAndView mav = new ModelAndView("create-product");
         Book book = service.get(id);
+        List<Vote> votes = service.getVoteByBookId(id);
+        mav.addObject("votes", votes);
+
+        //calculate average vote
+        double averageVote = 0;
+        if(votes.size() > 0){
+            averageVote = votes.stream().mapToDouble(Vote::getVote).average().getAsDouble();
+            //round to 1 decimal place
+            averageVote = Math.round(averageVote * 10.0) / 10.0;
+        }
+        mav.addObject("averageVote", averageVote);
         mav.addObject("book", book);
 
         return mav;
@@ -256,5 +267,54 @@ public class Controller {
         modelAndView.addObject("orderBooks", orderBooks);
         modelAndView.setViewName("history");
         return modelAndView;
+    }
+
+    //vote
+    @RequestMapping(value = {"/vote"}, method = RequestMethod.POST)
+    public String vote(
+            HttpServletRequest request,
+            RedirectAttributes resp
+    ) throws IOException {
+        System.out.println(request);
+        System.out.println("vote");
+
+        String bookId = request.getParameter("bookId");
+        String vote = request.getParameter("voteStar");
+        String comment = request.getParameter("voteComment");
+
+        return "redirect:/detailOredit/" + bookId;
+    }
+
+    @RequestMapping(value = {"/vote"}, method = RequestMethod.GET)
+    public @ResponseBody Object vote1(
+            HttpServletRequest request,
+            RedirectAttributes resp
+    ) throws IOException {
+        System.out.println(request);
+        System.out.println("vote");
+
+
+
+        String ajaxResponse = "";
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            String bookId = request.getParameter("bookId");
+            String voteStar = request.getParameter("voteStar");
+            String comment = request.getParameter("voteComment");
+
+            Vote vote  = new Vote();
+            vote.setBook(service.get(Long.valueOf(bookId)));
+            vote.setComment(comment);
+            vote.setVote(Integer.valueOf(voteStar));
+            vote.setVoteDate(new Date());
+            User userlogin = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+            vote.setUser(userlogin);
+            service.saveVote(vote);
+            return 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return ajaxResponse;
     }
 }

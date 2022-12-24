@@ -208,60 +208,113 @@
                 </div>
             </c:if>
             <c:if test="${pageContext.request.isUserInRole('ROLE_USER')}">
-                <%--                number book and add to cart--%>
-
-                <div class="flex flex-wrap -mx-3 mb-6">
-                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-3"
-                           for="grid-pages">
-                        Số lượng
-                    </label>
-                    <div class="flex w-full px-3 mb-6 md:mb-0">
-                        <div class="align-self-center">
-                            <input name="numberToBuy"
-                                   class="appearance-none block  bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                   id="numberToBuy"/>
+            <div class="flex">
+                <div class="w-[40%]">
+                    <div class="flex flex-wrap -mx-3 mb-6">
+                        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-3"
+                               for="grid-pages">
+                            Số lượng
+                        </label>
+                        <div class="flex w-full px-3 mb-6 md:mb-0">
+                            <div class="align-self-center">
+                                <input name="numberToBuy" type="number"
+                                       class="appearance-none block  bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                       id="numberToBuy"/>
+                            </div>
+                            <div class="align-self-center">
+                                <button type="button"
+                                        onclick="addToCart(${book.id}, '${book.title}', '${book.author}', '${book.description}', '${book.publishedDate}', '${book.pages}', '${book.type}', '${book.price}')"
+                                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                    Thêm vào giỏ hàng
+                                </button>
+                            </div>
                         </div>
-                        <div class="align-self-center">
-                            <button type="button"
-                                    onclick="addToCart(${book.id}, '${book.title}', '${book.author}', '${book.description}', '${book.publishedDate}', '${book.pages}', '${book.type}', '${book.price}')"
-                                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                Thêm vào giỏ hàng
-                            </button>
+                    </div>
+
+                        <%--                vote ( max is 5 and min is 1 ) --%>
+                    <div class="flex flex-wrap -mx-3 mb-6">
+                        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-3"
+                               for="grid-pages">
+                            Đánh giá
+                        </label>
+                        <div class="flex w-full px-3 mb-6 md:mb-0 gap-3">
+                            <div>
+                                <input name="vote" placeholder="Nội dung đánh giá"
+                                       class="appearance-none block  bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                       id="vote"/>
+                            </div>
+                            <div class="align-self center">
+                                <select class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                        id="vote-star">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
+                            </div>
+                            <div class="align-self center">
+                                <button type="button"
+                                        onclick="voteBook(${book.id}, '${book.title}', '${book.author}', '${book.description}', '${book.publishedDate}', '${book.pages}', '${book.type}', '${book.price}')"
+                                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                    Đánh giá
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <div class="w-[60%]">
+                    <div class="flex flex-wrap -mx-3 mb-6">
+                        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-3"
+                               for="grid-pages">
+                            Đánh giá: <c:out value="${votes.size()}"/> lượt.
+                            Trung bình: <c:out value="${averageVote}"/> sao
+<%--                            ( >3 - chán, >4 - bình thường, >4.5 - hay )--%>
+                            ( <c:choose>
+                                <c:when test="${averageVote < 3.5}">
+                                    <c:out value="chán"/>
+                                </c:when>
+                                <c:when test="${averageVote < 4.5}">
+                                    <c:out value="bình thường"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:out value="hay"/>
+                                </c:otherwise>
+                        </c:choose> )
+                        </label>
 
-<%--                vote ( max is 5 and min is 1 ) --%>
-                <div class="flex flex-wrap -mx-3 mb-6">
-                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-3"
-                           for="grid-pages">
-                        Đánh giá
-                    </label>
-                    <div class="flex w-full px-3 mb-6 md:mb-0 gap-3">
-                        <div>
-                            <input name="vote" placeholder="Nội dung đánh giá"
-                                   class="appearance-none block  bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                   id="vote"/>
-                        </div>
-                        <div class="align-self center">
-                            <select class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="vote-star">
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                            </select>
-                        </div>
-                        <div class="align-self center">
-                            <button type="button"
-                                    onclick="vote(${book.id}, '${book.title}', '${book.author}', '${book.description}', '${book.publishedDate}', '${book.pages}', '${book.type}', '${book.price}')"
-                                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                Đánh giá
-                            </button>
+                        <div class="container max-h-[30vh] overflow-y-scroll">
+                            <div class="row">
+                                <div class="col-md-8" id="vote-list">
+                                        <%--                                    <div class="comments-list">--%>
+                                        <%--                                        <div class="media">--%>
+                                        <%--                                            <p class="pull-right"><small>5 days ago</small></p>--%>
+                                        <%--                                            <div class="media-body">--%>
+                                        <%--                                                <h4 class="media-heading user_name">Baltej Singh</h4>--%>
+                                        <%--                                                Wow! this is really great.--%>
+                                        <%--                                            </div>--%>
+                                        <%--                                        </div>--%>
+                                        <%--                                    </div>--%>
+                                    <c:forEach items="${votes}" var="vote">
+                                        <div class="comments-list">
+                                            <div class="media">
+                                                <p class="pull-right text-xs"><small>${vote.voteDate}</small></p>
+                                                <div class="media-body">
+                                                    <h4 class="media-heading user_name"><b>${vote.user.fullName} - ${vote.vote} sao</b>
+                                                        </h4>
+                                                        ${vote.comment}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </c:forEach>
+
+
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </c:if>
+                </c:if>
         </form>
     </div>
 </div>
@@ -291,7 +344,39 @@
         $("input[name='vote']").attr("disabled", false);
         //expect vote-star
         $("select[id='vote-star']").attr("disabled", false);
+
     });
+
+    function voteBook(bookId, title, author, description, publishedDate, pages, type, price) {
+        let voteComment = $("input[name='vote']").val();
+        let voteStar = $("select[id='vote-star']").val();
+
+        console.log(vote);
+        $.ajax({
+            url: "${contextPath}/vote",
+            type: "GET",
+            dataType: 'json',
+            data: {
+                bookId: bookId,
+                voteComment: voteComment,
+                voteStar: voteStar
+            },
+            contentType: "application/json",
+            success: function (data) {
+                console.log(data);
+                if (data) {
+                    alert("Đánh giá thành công");
+                    window.location.href = "${contextPath}/detailOredit/" + bookId;
+                } else {
+                    alert("Đánh giá thất bại");
+                }
+            },
+            fail: function (e) {
+                console.log(e);
+                alert("Đánh giá thất bại");
+            }
+        })
+    }
 
 
     var deleteFile = function () {
@@ -369,7 +454,6 @@
             }
             localStorage.setItem("cart", JSON.stringify(cart));
         }
-
 
 
         loadCart();

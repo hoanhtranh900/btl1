@@ -3,16 +3,20 @@ package com.example.btl1.service;
 import com.example.btl1.model.Book;
 import com.example.btl1.model.FileAttachDocument;
 import com.example.btl1.model.OrderBook;
+import com.example.btl1.model.Vote;
 import com.example.btl1.repository.BookRepository;
 import com.example.btl1.repository.OrderBookRepository;
+import com.example.btl1.repository.VoteRepository;
 import com.example.btl1.utils.H;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.*;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
 
 @org.springframework.stereotype.Service
+@Transactional(rollbackFor = Exception.class)
 public class Service {
     private String errorMessage;
     @Autowired
@@ -22,6 +26,7 @@ public class Service {
 
     @Autowired
     private FileService fileService;
+    @Autowired private VoteRepository voteRepository;
 
     public void save(Book book) {
 
@@ -123,5 +128,13 @@ public class Service {
         //order by buy date desc
         return orderBookRepository.findByOrderByBuyDateDesc();
 //        return orderBookRepository.findAll();
+    }
+
+    public Vote saveVote(Vote vote) {
+        return voteRepository.save(vote);
+    }
+
+    public List<Vote> getVoteByBookId(Long id) {
+        return voteRepository.findByBook_Id(id);
     }
 }

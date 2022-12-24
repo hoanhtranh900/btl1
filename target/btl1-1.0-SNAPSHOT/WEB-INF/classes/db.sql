@@ -106,6 +106,7 @@ CREATE TABLE vote
     user_id   BIGINT                NULL,
     vote      INT                   NULL,
     comment   VARCHAR(255)          NULL,
+    voteDate  datetime              NULL,
     CONSTRAINT pk_vote PRIMARY KEY (id),
     CONSTRAINT fk_vote_book_id FOREIGN KEY (book_id) REFERENCES book (id),
     CONSTRAINT fk_vote_user_id FOREIGN KEY (user_id) REFERENCES user (id)
