@@ -333,7 +333,7 @@
         //check role if has role_user disable all input, select
         //get by name = currentRole
         let currentRole = $("input[name='currentRole']").val();
-        if (currentRole) {
+        if (currentRole == "true") {
             $("input").attr("disabled", true);
             $("select").attr("disabled", true);
             $("textarea").attr("disabled", true);

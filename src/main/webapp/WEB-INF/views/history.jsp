@@ -41,7 +41,7 @@
                     </div>
                     <div class="flex mt-10 mb-5">
                         <h3 class="font-semibold text-gray-600 text-xs uppercase w-[3%]">STT</h3>
-                        <h3 class="font-semibold  text-gray-600 text-xs uppercase w-[14%] ">Ngày
+                        <h3 class="font-semibold  text-gray-600 text-xs uppercase w-[10%] ">Ngày
                             đặt hàng</h3>
                         <h3 class="font-semibold  text-gray-600 text-xs uppercase w-[9%] ">Thành
                             tiền</h3>
@@ -81,6 +81,28 @@
 <script src="${contextPath}/resources/js/script.js"></script>
 
 <script>
+    function changeStatus(e, id) {
+        console.log(id)
+        //call ajax update
+        $.ajax({
+            url: "${contextPath}/order/updateStatus",
+            type: "GET",
+            data: {
+                id: id,
+                status: document.getElementById("select1").value
+            },
+            success: function (data) {
+                console.log(data)
+                if (data) {
+                    alert("Cập nhật thành công")
+                } else {
+                    alert("Cập nhật thất bại")
+                }
+            }
+        })
+
+    }
+
     $(document).ready(function () {
         let orderBooks_ = [];
         let result = [];
@@ -97,6 +119,7 @@
             },
             quantity: ${orderBook.quantity},
             total: ${orderBook.total},
+            status: ${orderBook.status},
             price: "${orderBook.book.priceString}",
             address: "${orderBook.address}",
             moneyConvert: "${orderBook.moneyConvert}",
@@ -114,6 +137,7 @@
                 total: _.sumBy(value, 'total'),
                 moneyConvert: value[0].total.toLocaleString('vi-VN', {style: 'currency', currency: 'VND'}),
                 orderBooks: value,
+                status: value[0].status,
                 address: value[0].address,
                 buyDateString: value[0].buyDateString,
                 statusString: value[0].statusString,
@@ -129,18 +153,29 @@
             if (result[index].orderBooks) {
                 result[index].orderBooks.forEach((item1, index1) => {
                     //just show index + 1 at first item
-                    html += `<div class="flex items-center hover:bg-gray-100 -mx-8 px-6 py-5">
+                    html += `<div class="flex items-center hover:bg-gray-100  py-5">
                             <div class="flex w-[3%]">
-                                <span class="text-left font-semibold text-sm ml-3">` + ((index1 == 0) ? (index + 1) : "") + `</span>
+                                <span class="text-left font-semibold text-sm ">` + ((index1 == 0) ? (index + 1) : "") + `</span>
                             </div>
 
-                            <span class=" w-[14%] font-semibold text-sm">` + ((index1 == 0) ? (item.buyDateString) : "") + `</span>
+                            <span class=" w-[10%] font-semibold text-sm">` + ((index1 == 0) ? (item.buyDateString) : "") + `</span>
 
                              <div class="flex w-[9%]">
                                 <span class="text-left font-semibold text-sm ml-3">` + ((index1 == 0) ? (item.moneyConvert) : "") + `</span>
                             </div>
-                            <span class=" w-[14%] font-semibold text-sm">` + ((index1 == 0) ? (item.statusString) : "") + `</span>
-                            <span class=" w-[14%] font-semibold text-sm">` + ((index1 == 0) ? (item.address) : "") + `</span>
+
+                            <c:if test="${pageContext.request.isUserInRole('ROLE_USER')}">
+                                <span class=" w-[14%] font-semibold text-sm">` + ((index1 == 0) ? (item.statusString) : "") + `</span>
+                            </c:if>
+                            <c:if test="${pageContext.request.isUserInRole('ROLE_ADMIN')}">
+                                <select id="select1" onchange="changeStatus(this,`+ item1.id + ` )" style="opacity: ` + ((index1 == 0) ? 1 : 0) + `" ` + ((index1 == 0) ? "" : "disabled") + ` class=" w-[14%] font-semibold text-sm">
+                                    <option value="1" `+ ((item.status == 1) ? "selected" : "") + `>Đang xử lý</option>>Chờ xử lý</option>
+                                    <option value="2" `+ ((item.status == 2) ? "selected" : "") + `>Đang giao hàng</option>
+                                    <option value="3" `+ ((item.status == 3) ? "selected" : "") + `>Đã giao hàng</option>
+                                    <option value="4" `+ ((item.status == 4) ? "selected" : "") + `>Đã hủy</option>
+                                </select>
+                            </c:if>
+                            <span class=" w-[14%] font-semibold text-sm text-left ml-3">` + ((index1 == 0) ? (item.address) : "") + `</span>
 
                             <div class="flex w-[18%]">
                                 <div class="w-20">
@@ -152,9 +187,9 @@
                                     <span class="font-semibold hover:text-red-500 text-gray-500 text-xs">` + item1.book.description + `</span>
                                 </div>
                             </div>
-                            <span class=" w-[14%] font-semibold text-sm">` + item1.quantity + `</span>
+                            <span class=" w-[14%] font-semibold text-sm text-left">` + item1.quantity + `</span>
 
-                            <span class=" w-[14%] font-semibold text-sm">` + item1.price + `</span>
+                            <span class=" w-[14%] font-semibold text-sm text-left">` + item1.price + `</span>
 
                         </div>`;
 
@@ -167,7 +202,9 @@
         $('#total').html(result.length);
 
 
+
     })
+
 </script>
 
 </body>

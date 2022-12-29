@@ -216,18 +216,25 @@ public class Controller {
                     return modelAndView;
                 }
             }
+            if (!H.isTrue(address) || !H.isTrue(phone)) {
+                modelAndView.addObject("message", "Vui lòng nhập địa chỉ hoặc số điện thoại");
+                modelAndView.setViewName("cart");
+                return modelAndView;
+            }
             List<OrderBook> orderBooks = new ArrayList<>();
             for (CartDTO cartDTO : cartDTOS) {
                 OrderBook orderBook = new OrderBook();
                 orderBook.setAddress(address);
                 orderBook.setTotal(Long.valueOf(totalMoney));
                 orderBook.setStatus(1);
-                orderBook.setBook(service.get(cartDTO.getId()));
+                Book book = service.get(cartDTO.getId());
+                orderBook.setBook(book);
                 orderBook.setUser(userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
                 orderBook.setBuyDate(new Date());
                 orderBook.setPhone(phone);
                 orderBook.setQuantity(cartDTO.getQuantity());
                 service.saveOrderBook(orderBook);
+                book.setRemain( book.getRemain() - cartDTO.getQuantity()  );
                 orderBooks.add(orderBook);
             }
 
@@ -246,11 +253,7 @@ public class Controller {
             modelAndView.setViewName("cart");
             return modelAndView;
         }
-        if (!H.isTrue(address) || !H.isTrue(phone)) {
-            modelAndView.addObject("message", "Vui lòng nhập địa chỉ hoặc số điện thoại");
-            modelAndView.setViewName("cart");
-            return modelAndView;
-        }
+
 
 
         //redirect
@@ -261,6 +264,16 @@ public class Controller {
     //history
     @RequestMapping(value = {"/history"}, method = RequestMethod.GET)
     public ModelAndView history() {
+        List<OrderBook> orderBooks = service.findAllOrderBookByLoginUser();
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("orderBooks", orderBooks);
+        modelAndView.setViewName("history");
+        return modelAndView;
+    }
+
+    @RequestMapping(value = {"/history-admin"}, method = RequestMethod.GET)
+    public ModelAndView historyAdmin() {
         List<OrderBook> orderBooks = service.findAllOrderBook();
 
         ModelAndView modelAndView = new ModelAndView();
@@ -317,4 +330,27 @@ public class Controller {
 
         return ajaxResponse;
     }
+
+    @RequestMapping(value = {"/order/updateStatus"}, method = RequestMethod.GET)
+    public @ResponseBody Object updateStatus(
+            HttpServletRequest request,
+            RedirectAttributes resp
+    ) throws IOException {
+        String id = request.getParameter("id");
+        String status = request.getParameter("status");
+
+        OrderBook orderBook = service.findOrderBookById(Long.valueOf(id));
+        String concatId = orderBook.getOrderHistoryId();
+
+        List<OrderBook> orderBooks = service.findAllOrderBookByOrderHistoryId(concatId);
+
+        orderBooks.stream().forEach(orderBook1 -> {
+            orderBook1.setStatus(Integer.valueOf(status));
+            service.saveOrderBook(orderBook1);
+        });
+
+        return 1;
+
+    }
+
 }

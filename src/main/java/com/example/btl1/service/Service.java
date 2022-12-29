@@ -1,14 +1,13 @@
 package com.example.btl1.service;
 
-import com.example.btl1.model.Book;
-import com.example.btl1.model.FileAttachDocument;
-import com.example.btl1.model.OrderBook;
-import com.example.btl1.model.Vote;
+import com.example.btl1.model.*;
 import com.example.btl1.repository.BookRepository;
 import com.example.btl1.repository.OrderBookRepository;
+import com.example.btl1.repository.UserRepository;
 import com.example.btl1.repository.VoteRepository;
 import com.example.btl1.utils.H;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.*;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +26,8 @@ public class Service {
     @Autowired
     private FileService fileService;
     @Autowired private VoteRepository voteRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public void save(Book book) {
 
@@ -136,5 +137,20 @@ public class Service {
 
     public List<Vote> getVoteByBookId(Long id) {
         return voteRepository.findByBook_Id(id);
+    }
+
+    public List<OrderBook> findAllOrderBookByLoginUser() {
+
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        return orderBookRepository.findByUser_UsernameOrderByBuyDateDesc(userName);
+    }
+
+    public OrderBook findOrderBookById(Long id) {
+        return orderBookRepository.findOne(id);
+    }
+
+    public List<OrderBook> findAllOrderBookByOrderHistoryId(String concatId) {
+        return orderBookRepository.findByOrderHistoryId(concatId);
     }
 }
