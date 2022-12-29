@@ -196,6 +196,8 @@
             }
             //clear local storage
             localStorage.clear();
+            //reload
+            window.location.reload()
         }
     });
 
