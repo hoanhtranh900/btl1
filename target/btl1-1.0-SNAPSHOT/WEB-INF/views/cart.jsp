@@ -181,7 +181,7 @@
             total += (Number(price) * Number(quantity));
         }
         document.getElementById('total').innerHTML = cart ? cart.length : 0;
-        document.getElementById('total-money').innerHTML = total;
+        document.getElementById('total-money').innerHTML = (total + 15000).toLocaleString('vi-VN', {style: 'currency', currency: 'VND'});
 
     });
 

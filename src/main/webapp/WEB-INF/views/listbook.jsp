@@ -194,6 +194,8 @@
                 $("#message-toast").text("Đặt hàng thành công");
                 $('#toast-id').toast('show')
             }
+            //clear local storage
+            localStorage.clear();
         }
     });
 
