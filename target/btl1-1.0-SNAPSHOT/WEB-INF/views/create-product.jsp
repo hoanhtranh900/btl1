@@ -124,16 +124,16 @@
                                    for="grid-pages">
                                 Số trang
                             </label>
-                            <input name="pages" value="${book.pages}"
+                            <input name="pages" value="${book.pages}" onchange="checkPage(this)"
                                    class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                    id="grid-pages" type="number"/>
                         </div>
-                        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
+                        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0" >
                             <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                                    for="grid-pages">
                                 Giá
                             </label>
-                            <input name="price" value="${book.price}"
+                            <input name="price" value="${book.price}" onchange="checkPrice(this)"
                                    class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                    type="number"/>
                         </div>
@@ -142,7 +142,7 @@
                                    for="grid-pages">
                                 Số lượng còn lại
                             </label>
-                            <input name="remain" value="${book.remain}"
+                            <input name="remain" value="${book.remain}" onchange="checkRemain(this)"
                                    class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-2 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                    type="number"/>
                         </div>
@@ -347,6 +347,27 @@
 
     });
 
+    function checkRemain(e) {
+        if(e.value < 0){
+            alert("Số lượng không được nhỏ hơn 0");
+            e.value = 0;
+        }
+    }
+
+    function checkPage(e) {
+        if(e.value < 0){
+            alert("Số trang không được nhỏ hơn 0");
+            e.value = 0;
+        }
+    }
+
+    function checkPrice(e) {
+        if(e.value < 0){
+            alert("Giá không được nhỏ hơn 0");
+            e.value = 0;
+        }
+    }
+
     function voteBook(bookId, title, author, description, publishedDate, pages, type, price) {
         let voteComment = $("input[name='vote']").val();
         let voteStar = $("select[id='vote-star']").val();
@@ -423,8 +444,8 @@
 
     function addToCart(id, title, author, description, publishedDate, pages, type, price) {
         let numberToBuy = document.getElementById("numberToBuy").value;
-        if (numberToBuy == null || numberToBuy == "") {
-            alert("Vui lòng nhập số lượng");
+        if (numberToBuy == null || numberToBuy == "" || numberToBuy <= 0) {
+            alert("Vui lòng nhập đúng số lượng");
             return;
         }
 
