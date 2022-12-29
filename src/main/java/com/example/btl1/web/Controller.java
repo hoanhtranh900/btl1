@@ -352,5 +352,25 @@ public class Controller {
         return 1;
 
     }
+    @RequestMapping(value = {"/order/cancelOrder"}, method = RequestMethod.GET)
+    public @ResponseBody Object cancelOrder(
+            HttpServletRequest request,
+            RedirectAttributes resp
+    ) throws IOException {
+        String id = request.getParameter("id");
+
+        OrderBook orderBook = service.findOrderBookById(Long.valueOf(id));
+        String concatId = orderBook.getOrderHistoryId();
+
+        List<OrderBook> orderBooks = service.findAllOrderBookByOrderHistoryId(concatId);
+
+        orderBooks.stream().forEach(orderBook1 -> {
+            orderBook1.setStatus(4);
+            service.saveOrderBook(orderBook1);
+        });
+
+        return 1;
+
+    }
 
 }

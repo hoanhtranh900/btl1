@@ -40,20 +40,21 @@
                         </span> Đơn hàng</h2>
                     </div>
                     <div class="flex mt-10 mb-5">
-                        <h3 class="font-semibold text-gray-600 text-xs uppercase w-[3%]">STT</h3>
+                        <h3 class="font-semibold text-gray-600 text-xs uppercase w-[5%]">STT</h3>
                         <h3 class="font-semibold  text-gray-600 text-xs uppercase w-[10%] ">Ngày
                             đặt hàng</h3>
-                        <h3 class="font-semibold  text-gray-600 text-xs uppercase w-[9%] ">Thành
+                        <h3 class="font-semibold  text-gray-600 text-xs uppercase w-[10%]">Thành
                             tiền</h3>
-                        <h3 class="font-semibold  text-gray-600 text-xs uppercase w-[14%] ">Trạng
+                        <h3 class="font-semibold  text-gray-600 text-xs uppercase w-[10%]">Trạng
                             thái</h3>
-                        <h3 class="font-semibold  text-gray-600 text-xs uppercase w-[14%] ">địa chỉ</h3>
-                        <h3 class="font-semibold text-gray-600 text-xs uppercase w-[18%]">Sản phẩm</h3>
-                        <h3 class="font-semibold  text-gray-600 text-xs uppercase w-[14%] ">Số
+                        <h3 class="font-semibold  text-gray-600 text-xs uppercase w-[10%]">địa chỉ</h3>
+                        <h3 class="font-semibold text-gray-600 text-xs uppercase w-[20%]">Sản phẩm</h3>
+                        <h3 class="font-semibold  text-gray-600 text-xs uppercase w-[10%]">Số
                             lượng</h3>
-                        <h3 class="font-semibold  text-gray-600 text-xs uppercase w-[14%] ">
+                        <h3 class="font-semibold  text-gray-600 text-xs uppercase w-[10%]">
                             Giá</h3>
-
+                        <h3 class="font-semibold  text-gray-600 text-xs uppercase w-[10%]">
+                            Hành động</h3>
 
                     </div>
                     <div id="list-product" class="overflow-y-auto h-[65vh] overflow-x-hidden">
@@ -101,6 +102,25 @@
             }
         })
 
+    }
+
+    function cancelOrder(id) {
+        $.ajax({
+            url: "${contextPath}/order/cancelOrder",
+            type: "GET",
+            data: {
+                id: id
+            },
+            success: function (data) {
+                console.log(data)
+                if (data) {
+                    alert("Hủy đơn hàng thành công")
+                    window.location.reload()
+                } else {
+                    alert("Hủy đơn hàng thất bại")
+                }
+            }
+        })
     }
 
     $(document).ready(function () {
@@ -154,31 +174,31 @@
                 result[index].orderBooks.forEach((item1, index1) => {
                     //just show index + 1 at first item
                     html += `<div class="flex items-center hover:bg-gray-100  py-5">
-                            <div class="flex w-[3%]">
+                            <div class="flex w-[5%]">
                                 <span class="text-left font-semibold text-sm ">` + ((index1 == 0) ? (index + 1) : "") + `</span>
                             </div>
 
                             <span class=" w-[10%] font-semibold text-sm">` + ((index1 == 0) ? (item.buyDateString) : "") + `</span>
 
-                             <div class="flex w-[9%]">
+                             <div class="flex w-[10%]">
                                 <span class="text-left font-semibold text-sm ml-3">` + ((index1 == 0) ? (item.moneyConvert) : "") + `</span>
                             </div>
 
                             <c:if test="${pageContext.request.isUserInRole('ROLE_USER')}">
-                                <span class=" w-[14%] font-semibold text-sm">` + ((index1 == 0) ? (item.statusString) : "") + `</span>
+                                <span class=" w-[10%] font-semibold text-sm">` + ((index1 == 0) ? (item.statusString) : "") + `</span>
                             </c:if>
                             <c:if test="${pageContext.request.isUserInRole('ROLE_ADMIN')}">
-                                <select id="select1" onchange="changeStatus(this,`+ item1.id + ` )" style="opacity: ` + ((index1 == 0) ? 1 : 0) + `" ` + ((index1 == 0) ? "" : "disabled") + ` class=" w-[14%] font-semibold text-sm">
+                                <select id="select1" onchange="changeStatus(this,`+ item1.id + ` )" style="opacity: ` + ((index1 == 0) ? 1 : 0) + `" ` + ((index1 == 0) ? "" : "disabled") + ` class=" w-[10%] font-semibold text-sm">
                                     <option value="1" `+ ((item.status == 1) ? "selected" : "") + `>Đang xử lý</option>>Chờ xử lý</option>
                                     <option value="2" `+ ((item.status == 2) ? "selected" : "") + `>Đang giao hàng</option>
                                     <option value="3" `+ ((item.status == 3) ? "selected" : "") + `>Đã giao hàng</option>
                                     <option value="4" `+ ((item.status == 4) ? "selected" : "") + `>Đã hủy</option>
                                 </select>
                             </c:if>
-                            <span class=" w-[14%] font-semibold text-sm text-left ml-3">` + ((index1 == 0) ? (item.address) : "") + `</span>
+                            <span class=" w-[10%] font-semibold text-sm text-left ml-3">` + ((index1 == 0) ? (item.address) : "") + `</span>
 
-                            <div class="flex w-[18%]">
-                                <div class="w-20">
+                            <div class="flex w-[20%]">
+                                <div>
                                     <img class="h-24" src="` + item1.book.image + `" alt="">
                                 </div>
                                 <div class="flex flex-col justify-between ml-4 flex-grow">
@@ -187,9 +207,17 @@
                                     <span class="font-semibold hover:text-red-500 text-gray-500 text-xs">` + item1.book.description + `</span>
                                 </div>
                             </div>
-                            <span class=" w-[14%] font-semibold text-sm text-left">` + item1.quantity + `</span>
+                            <span class=" w-[10%] font-semibold text-sm text-left">` + item1.quantity + `</span>
 
-                            <span class=" w-[14%] font-semibold text-sm text-left">` + item1.price + `</span>
+                            <span class=" w-[10%] font-semibold text-sm text-left">` + item1.price + `</span>
+
+                            <c:if test="${pageContext.request.isUserInRole('ROLE_USER')}">
+                                <button onclick="cancelOrder(`+ item1.id + `)" class="w-[10%]
+                                bg-blue-500 hover:bg-blue-700
+                                ` + ((index1 == 0 ) ? "" : "hidden") + `
+                                ` + ((item1.status == 4 || item1.status == 3 ) ? "hidden" : "") + `
+                                text-white font-bold py-2 px-4 rounded">Hủy</button>
+                            </c:if>
 
                         </div>`;
 

@@ -60,16 +60,14 @@ public class OrderBook {
 
     public String getStatusString() {
         switch (status) {
-            case 0:
-                return "Đang chờ xử lý";
             case 1:
-                return "Đang giao hàng";
-            case 2:
-                return "Đã giao hàng";
-            case 3:
-                return "Đã hủy";
-            default:
                 return "Đang chờ xử lý";
+            case 2:
+                return "Đang giao hàng";
+            case 3:
+                return "Đã giao hàng";
+            default:
+                return "Đã hủy";
         }
     }
 
